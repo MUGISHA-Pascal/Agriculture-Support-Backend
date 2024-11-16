@@ -1,6 +1,24 @@
 const { Sequelize, DataTypes } = require("sequelize");
+import { Model } from "sequelize";
 import { ConnectionSequelize } from "../config/Dbconnection";
-const Farmer = ConnectionSequelize.define(
+import { farmerInterface } from "../interfaces/farmer";
+
+class FarmerInt extends Model<farmerInterface> implements farmerInterface {
+  public id!: string;
+  public firstname!: string;
+  public lastname!: string;
+  public country!: string;
+  public district!: string;
+  public phoneNo!: string;
+  public profilePhoto!: string;
+  public password!: string;
+  public farmerGeneratedUniqueID!: string;
+  public subscriptionType!: "Basic" | "Premium";
+  public subscriptionStartDate!: Date;
+  public subscriptionEndDate!: Date;
+}
+
+const Farmer = ConnectionSequelize.define<FarmerInt>(
   "Farmer",
   {
     id: {
@@ -18,12 +36,41 @@ const Farmer = ConnectionSequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: { len: [6, 6] },
     },
     profilePhoto: { type: DataTypes.STRING },
+
+    subscriptionType: {
+      type: DataTypes.ENUM("Basic", "Premium"),
+      allowNull: false,
+      defaultValue: "Basic",
+    },
+    subscriptionStartDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    subscriptionEndDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+Farmer.beforeCreate(async (farmer) => {
+  const lastFarmer = await Farmer.findOne({
+    order: [["createdAt", "DESC"]],
+  });
+
+  let newIDNumber = 1;
+  if (lastFarmer) {
+    const lastID = lastFarmer.farmerGeneratedUniqueID;
+    const lastNumber = parseInt(lastID.slice(1), 10);
+    newIDNumber = lastNumber + 1;
+  }
+
+  farmer.farmerGeneratedUniqueID = `F${String(newIDNumber).padStart(6, "0")}`;
+});
+
 export default Farmer;
