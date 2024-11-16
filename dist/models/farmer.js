@@ -23,6 +23,7 @@ const Farmer = Dbconnection_1.ConnectionSequelize.define("Farmer", {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
+        // primaryKey: true,
         allowNull: false,
     },
     firstname: { type: DataTypes.STRING, allowNull: false },
