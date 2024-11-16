@@ -30,7 +30,7 @@ const Buyer = Dbconnection_1.ConnectionSequelize.define("Buyer", {
     timestamps: true,
 });
 Buyer.beforeCreate((buyer) => __awaiter(void 0, void 0, void 0, function* () {
-    const lastBuyer = yield buyer.findOne({
+    const lastBuyer = yield Buyer.findOne({
         order: [["createdAt", "DESC"]],
     });
     let newIDNumber = 1;

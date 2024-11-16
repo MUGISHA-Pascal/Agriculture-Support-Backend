@@ -31,7 +31,7 @@ const Buyer = ConnectionSequelize.define<BuyerInt>(
 );
 
 Buyer.beforeCreate(async (buyer) => {
-  const lastBuyer = await buyer.findOne({
+  const lastBuyer = await Buyer.findOne({
     order: [["createdAt", "DESC"]],
   });
 
