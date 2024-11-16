@@ -10,7 +10,8 @@ app.use(bodyParser.json());
 (async () => {
   try {
     await ConnectionSequelize.authenticate();
-    console.log("connected to the database");
+    await ConnectionSequelize.sync({ force: true }); //change it to false in deployement
+    console.log("connected to the database and saved");
   } catch (error) {
     console.log(error);
   }

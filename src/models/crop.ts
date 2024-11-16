@@ -19,3 +19,4 @@ const Crop = ConnectionSequelize.define(
     timestamps: true,
   }
 );
+export default Crop;

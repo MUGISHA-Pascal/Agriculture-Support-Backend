@@ -16,3 +16,4 @@ const Crop = Dbconnection_1.ConnectionSequelize.define("Crop", {
 }, {
     timestamps: true,
 });
+exports.default = Crop;
