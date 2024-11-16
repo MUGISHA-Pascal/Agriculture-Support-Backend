@@ -21,7 +21,7 @@ const createToken = (id) => {
 };
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Farmer login
  *     description: Logs a farmer in and returns a JWT token.
@@ -115,7 +115,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.login = login;
 /**
  * @swagger
- * /signup:
+ * /auth/signup:
  *   post:
  *     summary: Farmer signup
  *     description: Registers a new farmer and returns a JWT token.
