@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import Farmer from "../models/farmer";
+import Buyer from "../models/buyer";
 
 const maxAge = 24 * 60 * 60;
 
@@ -170,32 +171,57 @@ export const login = async (req: Request, res: Response) => {
  *         description: Internal server error.
  */
 export const signup = async (req: Request, res: Response) => {
-  const { firstname, lastname, country, district, phoneNo, password } =
+  const { firstname, lastname, country, district, phoneNo, password, role } =
     req.body;
-  try {
-    const farmer = await Farmer.create({
+  if (role === "buyer") {
+    const buyer = await Buyer.create({
       firstname,
       lastname,
-      country,
-      district,
       phoneNo,
       password,
     });
-    const token = createToken(farmer.id);
+    const buyerId = parseInt(buyer.id.slice(1), 10);
+    const token = createToken(buyerId);
     res.cookie("jwt", token, { maxAge: maxAge * 1000 });
     res.status(200).json({
-      message: "Farmer created",
+      message: "buyer created",
       Farmer: {
-        id: farmer.id,
-        farmerUniqueId: farmer.farmerGeneratedUniqueID,
-        firstname: farmer.firstname,
-        lastname: farmer.lastname,
-        country: farmer.country,
-        district: farmer.district,
-        phoneNo: farmer.phoneNo,
+        id: buyer.id,
+        firstname: buyer.firstname,
+        lastname: buyer.lastname,
+        phoneNo: buyer.phoneNo,
       },
     });
-  } catch (error) {
-    console.log(error);
+  } else if (role === "farmer") {
+    try {
+      const farmer = await Farmer.create({
+        firstname,
+        lastname,
+        country,
+        district,
+        phoneNo,
+        password,
+      });
+      const token = createToken(farmer.id);
+      res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+      res.status(200).json({
+        message: "Farmer created",
+        Farmer: {
+          id: farmer.id,
+          farmerUniqueId: farmer.farmerGeneratedUniqueID,
+          firstname: farmer.firstname,
+          lastname: farmer.lastname,
+          country: farmer.country,
+          district: farmer.district,
+          phoneNo: farmer.phoneNo,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    res.json(404).json({
+      message: "unknown role",
+    });
   }
 };

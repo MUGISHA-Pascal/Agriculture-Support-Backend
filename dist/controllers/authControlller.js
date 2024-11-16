@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.signup = exports.login = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const farmer_1 = __importDefault(require("../models/farmer"));
+const buyer_1 = __importDefault(require("../models/buyer"));
 const maxAge = 24 * 60 * 60;
 const createToken = (id) => {
     return jsonwebtoken_1.default.sign({ id }, process.env.JWT_KEY, { expiresIn: "1d" });
@@ -185,33 +186,60 @@ exports.login = login;
  *         description: Internal server error.
  */
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, country, district, phoneNo, password } = req.body;
-    try {
-        const farmer = yield farmer_1.default.create({
+    const { firstname, lastname, country, district, phoneNo, password, role } = req.body;
+    if (role === "buyer") {
+        const buyer = yield buyer_1.default.create({
             firstname,
             lastname,
-            country,
-            district,
             phoneNo,
             password,
         });
-        const token = createToken(farmer.id);
+        const buyerId = parseInt(buyer.id.slice(1), 10);
+        const token = createToken(buyerId);
         res.cookie("jwt", token, { maxAge: maxAge * 1000 });
         res.status(200).json({
-            message: "Farmer created",
+            message: "buyer created",
             Farmer: {
-                id: farmer.id,
-                farmerUniqueId: farmer.farmerGeneratedUniqueID,
-                firstname: farmer.firstname,
-                lastname: farmer.lastname,
-                country: farmer.country,
-                district: farmer.district,
-                phoneNo: farmer.phoneNo,
+                id: buyer.id,
+                firstname: buyer.firstname,
+                lastname: buyer.lastname,
+                phoneNo: buyer.phoneNo,
             },
         });
     }
-    catch (error) {
-        console.log(error);
+    else if (role === "farmer") {
+        try {
+            const farmer = yield farmer_1.default.create({
+                firstname,
+                lastname,
+                country,
+                district,
+                phoneNo,
+                password,
+            });
+            const token = createToken(farmer.id);
+            res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+            res.status(200).json({
+                message: "Farmer created",
+                Farmer: {
+                    id: farmer.id,
+                    farmerUniqueId: farmer.farmerGeneratedUniqueID,
+                    firstname: farmer.firstname,
+                    lastname: farmer.lastname,
+                    country: farmer.country,
+                    district: farmer.district,
+                    phoneNo: farmer.phoneNo,
+                },
+            });
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    else {
+        res.json(404).json({
+            message: "unknown role",
+        });
     }
 });
 exports.signup = signup;
