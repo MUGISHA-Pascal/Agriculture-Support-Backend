@@ -1,10 +1,10 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 import { Model } from "sequelize";
 import { ConnectionSequelize } from "../config/Dbconnection";
-import { farmerInterface } from "../interfaces/farmer";
+import { farmerInterface } from "../interfaces/farmerInterface";
 
 class FarmerInt extends Model<farmerInterface> implements farmerInterface {
-  public id!: string;
+  public id!: number;
   public firstname!: string;
   public lastname!: string;
   public country!: string;
@@ -21,10 +21,15 @@ class FarmerInt extends Model<farmerInterface> implements farmerInterface {
 const Farmer = ConnectionSequelize.define<FarmerInt>(
   "Farmer",
   {
+    // id: {
+    //   type: DataTypes.UUID,
+    //   defaultValue: DataTypes.UUIDV4,
+    //   primaryKey: true,
+    // },
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
     },
     firstname: { type: DataTypes.STRING, allowNull: false },
     lastname: { type: DataTypes.STRING, allowNull: false },
@@ -35,6 +40,7 @@ const Farmer = ConnectionSequelize.define<FarmerInt>(
     farmerGeneratedUniqueID: {
       type: DataTypes.STRING,
       allowNull: false,
+      primaryKey: true,
       unique: true,
     },
     profilePhoto: { type: DataTypes.STRING },

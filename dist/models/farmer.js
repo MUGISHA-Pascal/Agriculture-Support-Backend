@@ -9,16 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const { Sequelize, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize_1 = require("sequelize");
 const Dbconnection_1 = require("../config/Dbconnection");
 class FarmerInt extends sequelize_1.Model {
 }
 const Farmer = Dbconnection_1.ConnectionSequelize.define("Farmer", {
+    // id: {
+    //   type: DataTypes.UUID,
+    //   defaultValue: DataTypes.UUIDV4,
+    //   primaryKey: true,
+    // },
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
     },
     firstname: { type: DataTypes.STRING, allowNull: false },
     lastname: { type: DataTypes.STRING, allowNull: false },
@@ -29,6 +34,7 @@ const Farmer = Dbconnection_1.ConnectionSequelize.define("Farmer", {
     farmerGeneratedUniqueID: {
         type: DataTypes.STRING,
         allowNull: false,
+        primaryKey: true,
         unique: true,
     },
     profilePhoto: { type: DataTypes.STRING },
