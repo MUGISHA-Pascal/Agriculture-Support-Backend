@@ -17,6 +17,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const Dbconnection_1 = require("./config/Dbconnection");
+const swagger_1 = __importDefault(require("./swagger"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -31,6 +32,8 @@ app.use(body_parser_1.default.json());
         console.log(error);
     }
 }))();
-app.listen(4000, () => {
+const port = process.env.PORT;
+app.listen(port, () => {
     console.log("app running on port 4000");
 });
+(0, swagger_1.default)(app, port);
