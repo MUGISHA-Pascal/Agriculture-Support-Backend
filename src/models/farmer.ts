@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 import { Model } from "sequelize";
 import { ConnectionSequelize } from "../config/Dbconnection";
 import { farmerInterface } from "../interfaces/farmerInterface";
-
+import bcrypt from "bcrypt";
 class FarmerInt extends Model<farmerInterface> implements farmerInterface {
   public id!: number;
   public firstname!: string;
@@ -12,7 +12,6 @@ class FarmerInt extends Model<farmerInterface> implements farmerInterface {
   public phoneNo!: string;
   public profilePhoto!: string;
   public password!: string;
-  public farmerGeneratedUniqueID!: string;
   public subscriptionType!: "Basic" | "Premium";
   public subscriptionStartDate!: Date;
   public subscriptionEndDate!: Date;
@@ -21,15 +20,10 @@ class FarmerInt extends Model<farmerInterface> implements farmerInterface {
 const Farmer = ConnectionSequelize.define<FarmerInt>(
   "Farmer",
   {
-    // id: {
-    //   type: DataTypes.UUID,
-    //   defaultValue: DataTypes.UUIDV4,
-    //   primaryKey: true,
-    // },
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      // primaryKey: true,
+      primaryKey: true,
       allowNull: false,
     },
     firstname: { type: DataTypes.STRING, allowNull: false },
@@ -38,17 +32,11 @@ const Farmer = ConnectionSequelize.define<FarmerInt>(
     district: { type: DataTypes.STRING, allowNull: false },
     phoneNo: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: { type: DataTypes.STRING, allowNull: false },
-    farmerGeneratedUniqueID: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      primaryKey: true,
-      unique: true,
-    },
     profilePhoto: { type: DataTypes.STRING },
 
     subscriptionType: {
       type: DataTypes.ENUM("Basic", "Premium"),
-      allowNull: false,
+      // allowNull: false,
       defaultValue: "Basic",
     },
     subscriptionStartDate: {
@@ -62,22 +50,19 @@ const Farmer = ConnectionSequelize.define<FarmerInt>(
   },
   {
     timestamps: true,
+    hooks: {
+      beforeSave: async (user: FarmerInt) => {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      },
+      beforeUpdate: async (user: FarmerInt) => {
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+    },
   }
 );
-
-Farmer.beforeCreate(async (farmer) => {
-  const lastFarmer = await Farmer.findOne({
-    order: [["createdAt", "DESC"]],
-  });
-
-  let newIDNumber = 1;
-  if (lastFarmer) {
-    const lastID = lastFarmer.farmerGeneratedUniqueID;
-    const lastNumber = parseInt(lastID.slice(1), 10);
-    newIDNumber = lastNumber + 1;
-  }
-
-  farmer.farmerGeneratedUniqueID = `F${String(newIDNumber).padStart(6, "0")}`;
-});
 
 export default Farmer;

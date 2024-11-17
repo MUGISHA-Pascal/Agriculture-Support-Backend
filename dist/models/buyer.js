@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const Dbconnection_1 = require("../config/Dbconnection");
 const { Sequelize, DataTypes } = require("sequelize");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class BuyerInt extends sequelize_1.Model {
 }
 const Buyer = Dbconnection_1.ConnectionSequelize.define("Buyer", {
@@ -28,6 +32,18 @@ const Buyer = Dbconnection_1.ConnectionSequelize.define("Buyer", {
     profilePhoto: { type: DataTypes.STRING },
 }, {
     timestamps: true,
+    hooks: {
+        beforeSave: (user) => __awaiter(void 0, void 0, void 0, function* () {
+            const salt = yield bcrypt_1.default.genSalt(10);
+            user.password = yield bcrypt_1.default.hash(user.password, salt);
+        }),
+        beforeUpdate: (user) => __awaiter(void 0, void 0, void 0, function* () {
+            if (user.changed("password")) {
+                const salt = yield bcrypt_1.default.genSalt(10);
+                user.password = yield bcrypt_1.default.hash(user.password, salt);
+            }
+        }),
+    },
 });
 Buyer.beforeCreate((buyer) => __awaiter(void 0, void 0, void 0, function* () {
     const lastBuyer = yield Buyer.findOne({

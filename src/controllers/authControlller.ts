@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import Farmer from "../models/farmer";
 import Buyer from "../models/buyer";
-
+import bcrypt from "bcrypt";
 const maxAge = 24 * 60 * 60;
 
 const createToken = (id: number): string => {
@@ -56,56 +56,52 @@ export const login = async (req: Request, res: Response) => {
   const { phoneNo, password, role } = req.body;
   if (role === "buyer") {
     try {
-      const buyer = await Buyer.findOne({ where: { password } });
+      const buyer = await Buyer.findOne({ where: { phoneNo } });
       if (buyer) {
-        const auth = await Buyer.findOne({ where: { phoneNo } });
-        if (auth) {
-          const buyerId = parseInt(auth.id.slice(1), 10);
-          const token = createToken(buyerId);
-          res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+        const ismatch = await bcrypt.compare(password, buyer.password);
+        if (ismatch) {
           res.status(200).json({
             message: "buyer found",
             Farmer: {
-              id: auth.id,
-              firstname: auth.firstname,
-              lastname: auth.lastname,
-              phoneNo: auth.phoneNo,
+              id: buyer.id,
+              firstname: buyer.firstname,
+              lastname: buyer.lastname,
+              phoneNo: buyer.phoneNo,
             },
           });
         } else {
-          res.status(401).json({ message: "buyer not found(phone number)" });
+          res.status(401).json({ message: "buyer not found(password)" });
         }
       } else {
-        res.status(401).json({ message: "buyer not found(password)" });
+        res.status(401).json({ message: "buyer not found(phone number)" });
       }
     } catch (error) {
       console.log(error);
     }
   } else if (role === "farmer") {
     try {
-      const farmer = await Farmer.findOne({ where: { password } });
+      const farmer = await Farmer.findOne({ where: { phoneNo } });
       if (farmer) {
-        const auth = await Farmer.findOne({ where: { phoneNo } });
-        if (auth) {
-          const token = createToken(auth.id);
+        const ismatch = await bcrypt.compare(password, farmer.password);
+        if (ismatch) {
+          const token = createToken(farmer.id);
           res.cookie("jwt", token, { maxAge: maxAge * 1000 });
           res.status(200).json({
             message: "Farmer found",
             Farmer: {
-              id: auth.id,
-              farmerUniqueId: auth.farmerGeneratedUniqueID,
-              firstname: auth.firstname,
-              lastname: auth.lastname,
-              country: auth.country,
-              district: auth.district,
-              phoneNo: auth.phoneNo,
+              id: farmer.id,
+              firstname: farmer.firstname,
+              lastname: farmer.lastname,
+              country: farmer.country,
+              district: farmer.district,
+              phoneNo: farmer.phoneNo,
             },
           });
         } else {
-          res.status(401).json({ message: "Farmer not found(phone number)" });
+          res.status(401).json({ message: "Farmer not found(password)" });
         }
       } else {
-        res.status(401).json({ message: "Farmer not found(password)" });
+        res.status(401).json({ message: "Farmer not found(phone number)" });
       }
     } catch (error) {
       console.log(error);
@@ -201,7 +197,6 @@ export const signup = async (req: Request, res: Response) => {
         message: "Farmer created",
         Farmer: {
           id: farmer.id,
-          farmerUniqueId: farmer.farmerGeneratedUniqueID,
           firstname: farmer.firstname,
           lastname: farmer.lastname,
           country: farmer.country,

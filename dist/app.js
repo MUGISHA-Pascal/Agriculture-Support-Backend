@@ -26,7 +26,7 @@ app.use(body_parser_1.default.json());
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Dbconnection_1.ConnectionSequelize.authenticate();
-        yield Dbconnection_1.ConnectionSequelize.sync({ force: true }); //change it to false in deployement
+        yield Dbconnection_1.ConnectionSequelize.sync({ force: false });
         console.log("connected to the database and saved");
     }
     catch (error) {

@@ -2,6 +2,7 @@ import { Model } from "sequelize";
 import { ConnectionSequelize } from "../config/Dbconnection";
 import { buyerInterface } from "../interfaces/buyerInterface";
 const { Sequelize, DataTypes } = require("sequelize");
+import bcrypt from "bcrypt";
 class BuyerInt extends Model<buyerInterface> implements buyerInterface {
   public id!: string;
   public firstname!: string;
@@ -27,6 +28,18 @@ const Buyer = ConnectionSequelize.define<BuyerInt>(
   },
   {
     timestamps: true,
+    hooks: {
+      beforeSave: async (user: BuyerInt) => {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      },
+      beforeUpdate: async (user: BuyerInt) => {
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+    },
   }
 );
 

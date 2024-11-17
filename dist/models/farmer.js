@@ -8,22 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const { DataTypes } = require("sequelize");
 const sequelize_1 = require("sequelize");
 const Dbconnection_1 = require("../config/Dbconnection");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class FarmerInt extends sequelize_1.Model {
 }
 const Farmer = Dbconnection_1.ConnectionSequelize.define("Farmer", {
-    // id: {
-    //   type: DataTypes.UUID,
-    //   defaultValue: DataTypes.UUIDV4,
-    //   primaryKey: true,
-    // },
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        // primaryKey: true,
+        primaryKey: true,
         allowNull: false,
     },
     firstname: { type: DataTypes.STRING, allowNull: false },
@@ -32,16 +31,10 @@ const Farmer = Dbconnection_1.ConnectionSequelize.define("Farmer", {
     district: { type: DataTypes.STRING, allowNull: false },
     phoneNo: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: { type: DataTypes.STRING, allowNull: false },
-    farmerGeneratedUniqueID: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true,
-        unique: true,
-    },
     profilePhoto: { type: DataTypes.STRING },
     subscriptionType: {
         type: DataTypes.ENUM("Basic", "Premium"),
-        allowNull: false,
+        // allowNull: false,
         defaultValue: "Basic",
     },
     subscriptionStartDate: {
@@ -54,17 +47,17 @@ const Farmer = Dbconnection_1.ConnectionSequelize.define("Farmer", {
     },
 }, {
     timestamps: true,
+    hooks: {
+        beforeSave: (user) => __awaiter(void 0, void 0, void 0, function* () {
+            const salt = yield bcrypt_1.default.genSalt(10);
+            user.password = yield bcrypt_1.default.hash(user.password, salt);
+        }),
+        beforeUpdate: (user) => __awaiter(void 0, void 0, void 0, function* () {
+            if (user.changed("password")) {
+                const salt = yield bcrypt_1.default.genSalt(10);
+                user.password = yield bcrypt_1.default.hash(user.password, salt);
+            }
+        }),
+    },
 });
-Farmer.beforeCreate((farmer) => __awaiter(void 0, void 0, void 0, function* () {
-    const lastFarmer = yield Farmer.findOne({
-        order: [["createdAt", "DESC"]],
-    });
-    let newIDNumber = 1;
-    if (lastFarmer) {
-        const lastID = lastFarmer.farmerGeneratedUniqueID;
-        const lastNumber = parseInt(lastID.slice(1), 10);
-        newIDNumber = lastNumber + 1;
-    }
-    farmer.farmerGeneratedUniqueID = `F${String(newIDNumber).padStart(6, "0")}`;
-}));
 exports.default = Farmer;

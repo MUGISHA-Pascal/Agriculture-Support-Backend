@@ -16,6 +16,7 @@ exports.signup = exports.login = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const farmer_1 = __importDefault(require("../models/farmer"));
 const buyer_1 = __importDefault(require("../models/buyer"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const maxAge = 24 * 60 * 60;
 const createToken = (id) => {
     return jsonwebtoken_1.default.sign({ id }, process.env.JWT_KEY, { expiresIn: "1d" });
@@ -67,29 +68,26 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { phoneNo, password, role } = req.body;
     if (role === "buyer") {
         try {
-            const buyer = yield buyer_1.default.findOne({ where: { password } });
+            const buyer = yield buyer_1.default.findOne({ where: { phoneNo } });
             if (buyer) {
-                const auth = yield buyer_1.default.findOne({ where: { phoneNo } });
-                if (auth) {
-                    const buyerId = parseInt(auth.id.slice(1), 10);
-                    const token = createToken(buyerId);
-                    res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+                const ismatch = yield bcrypt_1.default.compare(password, buyer.password);
+                if (ismatch) {
                     res.status(200).json({
                         message: "buyer found",
                         Farmer: {
-                            id: auth.id,
-                            firstname: auth.firstname,
-                            lastname: auth.lastname,
-                            phoneNo: auth.phoneNo,
+                            id: buyer.id,
+                            firstname: buyer.firstname,
+                            lastname: buyer.lastname,
+                            phoneNo: buyer.phoneNo,
                         },
                     });
                 }
                 else {
-                    res.status(401).json({ message: "buyer not found(phone number)" });
+                    res.status(401).json({ message: "buyer not found(password)" });
                 }
             }
             else {
-                res.status(401).json({ message: "buyer not found(password)" });
+                res.status(401).json({ message: "buyer not found(phone number)" });
             }
         }
         catch (error) {
@@ -98,31 +96,30 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     else if (role === "farmer") {
         try {
-            const farmer = yield farmer_1.default.findOne({ where: { password } });
+            const farmer = yield farmer_1.default.findOne({ where: { phoneNo } });
             if (farmer) {
-                const auth = yield farmer_1.default.findOne({ where: { phoneNo } });
-                if (auth) {
-                    const token = createToken(auth.id);
+                const ismatch = yield bcrypt_1.default.compare(password, farmer.password);
+                if (ismatch) {
+                    const token = createToken(farmer.id);
                     res.cookie("jwt", token, { maxAge: maxAge * 1000 });
                     res.status(200).json({
                         message: "Farmer found",
                         Farmer: {
-                            id: auth.id,
-                            farmerUniqueId: auth.farmerGeneratedUniqueID,
-                            firstname: auth.firstname,
-                            lastname: auth.lastname,
-                            country: auth.country,
-                            district: auth.district,
-                            phoneNo: auth.phoneNo,
+                            id: farmer.id,
+                            firstname: farmer.firstname,
+                            lastname: farmer.lastname,
+                            country: farmer.country,
+                            district: farmer.district,
+                            phoneNo: farmer.phoneNo,
                         },
                     });
                 }
                 else {
-                    res.status(401).json({ message: "Farmer not found(phone number)" });
+                    res.status(401).json({ message: "Farmer not found(password)" });
                 }
             }
             else {
-                res.status(401).json({ message: "Farmer not found(password)" });
+                res.status(401).json({ message: "Farmer not found(phone number)" });
             }
         }
         catch (error) {
@@ -222,7 +219,6 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "Farmer created",
                 Farmer: {
                     id: farmer.id,
-                    farmerUniqueId: farmer.farmerGeneratedUniqueID,
                     firstname: farmer.firstname,
                     lastname: farmer.lastname,
                     country: farmer.country,

@@ -7,7 +7,6 @@ export interface farmerInterface {
   phoneNo: string;
   password: string;
   profilePhoto?: string;
-  farmerGeneratedUniqueID?: string;
   subscriptionType?: "Basic" | "Premium";
   subscriptionStartDate?: Date;
   subscriptionEndDate?: Date;
