@@ -213,3 +213,107 @@ export const signup = async (req: Request, res: Response) => {
     });
   }
 };
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Buyer:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: Unique identifier for the buyer
+ *         firstname:
+ *           type: string
+ *           description: First name of the buyer
+ *         lastname:
+ *           type: string
+ *           description: Last name of the buyer
+ *         phoneNo:
+ *           type: string
+ *           description: Phone number of the buyer
+ *         password:
+ *           type: string
+ *           description: Password for the buyer's account
+ *         profilePhoto:
+ *           type: string
+ *           format: uri
+ *           description: URL to the buyer's profile photo
+ *       required:
+ *         - firstname
+ *         - lastname
+ *         - phoneNo
+ *         - password
+ *       example:
+ *         id: "123e4567-e89b-12d3-a456-426614174000"
+ *         firstname: "John"
+ *         lastname: "Doe"
+ *         phoneNo: "+250781234567"
+ *         password: "securePassword123"
+ *         profilePhoto: "https://example.com/profile/johndoe.jpg"
+ */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Farmer:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Unique identifier for the farmer
+ *         firstname:
+ *           type: string
+ *           description: First name of the farmer
+ *         lastname:
+ *           type: string
+ *           description: Last name of the farmer
+ *         country:
+ *           type: string
+ *           description: Country where the farmer resides
+ *         district:
+ *           type: string
+ *           description: District where the farmer resides
+ *         phoneNo:
+ *           type: string
+ *           description: Phone number of the farmer
+ *         password:
+ *           type: string
+ *           description: Password for the farmer's account
+ *         profilePhoto:
+ *           type: string
+ *           format: uri
+ *           description: URL to the farmer's profile photo
+ *         subscriptionType:
+ *           type: string
+ *           enum: ["Basic", "Premium"]
+ *           description: Type of subscription the farmer has (Basic or Premium)
+ *         subscriptionStartDate:
+ *           type: string
+ *           format: date
+ *           description: Date when the farmer's subscription started
+ *         subscriptionEndDate:
+ *           type: string
+ *           format: date
+ *           description: Date when the farmer's subscription ends
+ *       required:
+ *         - firstname
+ *         - lastname
+ *         - country
+ *         - district
+ *         - phoneNo
+ *         - password
+ *       example:
+ *         id: 123
+ *         firstname: "Alice"
+ *         lastname: "Smith"
+ *         country: "Rwanda"
+ *         district: "Kigali"
+ *         phoneNo: "+250788654321"
+ *         password: "securePassword456"
+ *         profilePhoto: "https://example.com/profile/alicesmith.jpg"
+ *         subscriptionType: "Premium"
+ *         subscriptionStartDate: "2024-01-01"
+ *         subscriptionEndDate: "2024-12-31"
+ */

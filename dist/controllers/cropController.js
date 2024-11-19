@@ -18,11 +18,11 @@ const crop_1 = __importDefault(require("../models/crop"));
  * @swagger
  * /crops/get_all_crops:
  *   get:
- *     summary: Fetch all crops
+ *     summary: Retrieve all crops
  *     tags: [Crops]
  *     responses:
  *       200:
- *         description: A list of crops.
+ *         description: List of all crops
  *         content:
  *           application/json:
  *             schema:
@@ -30,7 +30,7 @@ const crop_1 = __importDefault(require("../models/crop"));
  *               items:
  *                 $ref: '#/components/schemas/Crop'
  *       500:
- *         description: Failed to fetch crops.
+ *         description: Server error
  */
 const getAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -46,26 +46,27 @@ exports.getAllCrops = getAllCrops;
  * @swagger
  * /crops/get_crop/{id}:
  *   get:
- *     summary: Fetch a single crop by ID
+ *     summary: Retrieve a crop by its ID
  *     tags: [Crops]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the crop to fetch
  *         schema:
  *           type: string
+ *           format: uuid
+ *         description: Unique ID of the crop
  *     responses:
  *       200:
- *         description: The crop data.
+ *         description: The crop details
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Crop'
  *       404:
- *         description: Crop not found.
+ *         description: Crop not found
  *       500:
- *         description: Failed to fetch the crop.
+ *         description: Server error
  */
 const getCropById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
@@ -95,9 +96,13 @@ exports.getCropById = getCropById;
  *             $ref: '#/components/schemas/Crop'
  *     responses:
  *       201:
- *         description: The crop was successfully added.
+ *         description: Crop created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Crop'
  *       500:
- *         description: Failed to add the crop.
+ *         description: Server error
  */
 const addCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { cropName, harvestSeason, qtyPerSeason, pricePerKg, verified } = req.body;
@@ -120,15 +125,16 @@ exports.addCrop = addCrop;
  * @swagger
  * /crops/update_crop/{id}:
  *   put:
- *     summary: Update a crop by ID
+ *     summary: Update a crop by its ID
  *     tags: [Crops]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the crop to update
  *         schema:
  *           type: string
+ *           format: uuid
+ *         description: Unique ID of the crop
  *     requestBody:
  *       required: true
  *       content:
@@ -137,11 +143,11 @@ exports.addCrop = addCrop;
  *             $ref: '#/components/schemas/Crop'
  *     responses:
  *       200:
- *         description: The crop was updated successfully.
+ *         description: Crop updated successfully
  *       404:
- *         description: Crop not found.
+ *         description: Crop not found
  *       500:
- *         description: Failed to update the crop.
+ *         description: Server error
  */
 const updateCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
@@ -170,22 +176,23 @@ exports.updateCrop = updateCrop;
  * @swagger
  * /crops/delete_crop/{id}:
  *   delete:
- *     summary: Delete a crop by ID
+ *     summary: Delete a crop by its ID
  *     tags: [Crops]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the crop to delete
  *         schema:
  *           type: string
+ *           format: uuid
+ *         description: Unique ID of the crop
  *     responses:
  *       200:
- *         description: The crop was deleted successfully.
+ *         description: Crop deleted successfully
  *       404:
- *         description: Crop not found.
+ *         description: Crop not found
  *       500:
- *         description: Failed to delete the crop.
+ *         description: Server error
  */
 const deleteCropById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
@@ -207,7 +214,7 @@ exports.deleteCropById = deleteCropById;
  * @swagger
  * /crops/delete_all_crops:
  *   delete:
- *     summary: Delete multiple crops by IDs
+ *     summary: Delete multiple crops
  *     tags: [Crops]
  *     requestBody:
  *       required: true
@@ -220,15 +227,20 @@ exports.deleteCropById = deleteCropById;
  *                 type: array
  *                 items:
  *                   type: string
+ *                 description: List of crop IDs to delete
+ *             required:
+ *               - ids
+ *             example:
+ *               ids: ["123e4567-e89b-12d3-a456-426614174000", "123e4567-e89b-12d3-a456-426614174001"]
  *     responses:
  *       200:
- *         description: Crops deleted successfully.
+ *         description: Crops deleted successfully
  *       400:
- *         description: Invalid input.
+ *         description: Invalid request body
  *       404:
- *         description: No crops found with the provided IDs.
+ *         description: No crops found with the provided IDs
  *       500:
- *         description: Failed to delete crops.
+ *         description: Server error
  */
 const deleteAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ids } = req.body; // Expecting an array of IDs in the body
@@ -257,3 +269,44 @@ const deleteAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.deleteAllCrops = deleteAllCrops;
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Crop:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: Unique identifier for the crop
+ *         cropName:
+ *           type: string
+ *           description: Name of the crop
+ *         harvestSeason:
+ *           type: string
+ *           description: Harvest season of the crop
+ *         qtyPerSeason:
+ *           type: number
+ *           format: float
+ *           description: Quantity harvested per season
+ *         pricePerKg:
+ *           type: number
+ *           format: float
+ *           description: Price per kilogram of the crop
+ *         verified:
+ *           type: boolean
+ *           description: Whether the crop is verified
+ *       required:
+ *         - cropName
+ *         - harvestSeason
+ *         - qtyPerSeason
+ *         - pricePerKg
+ *       example:
+ *         id: "123e4567-e89b-12d3-a456-426614174000"
+ *         cropName: "Maize"
+ *         harvestSeason: "Summer"
+ *         qtyPerSeason: 2000
+ *         pricePerKg: 5.5
+ *         verified: true
+ */
