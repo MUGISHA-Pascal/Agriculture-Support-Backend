@@ -1,7 +1,17 @@
+import { Model } from "sequelize";
 import { ConnectionSequelize } from "../config/Dbconnection";
+import { CropInterface } from "../interfaces/cropInterface";
 const { Sequelize, DataTypes } = require("sequelize");
 
-const Crop = ConnectionSequelize.define(
+class CropInt extends Model<CropInterface> implements CropInterface {
+  public id!: string;
+  public cropName!: string;
+  public harvestSeason!: string;
+  public qtyPerSeason!: number;
+  public pricePerKg!: number;
+  public verified!: boolean;
+}
+const Crop = ConnectionSequelize.define<CropInt>(
   "Crop",
   {
     id: {

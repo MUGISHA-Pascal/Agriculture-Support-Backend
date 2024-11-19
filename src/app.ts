@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { ConnectionSequelize } from "./config/Dbconnection";
 import swaggerDocs from "./swagger";
 import AuthRoutes from "./routes/authRoutes";
+import CropRoutes from "./routes/cropRoutes";
 dotenv.config();
 const app: Express = express();
 app.use(cors());
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
   }
 })();
 app.use("/auth", AuthRoutes);
+app.use("/crop", CropRoutes);
 const port = process.env.PORT;
 app.listen(port, () => {
   console.log("app running on port 4000");
