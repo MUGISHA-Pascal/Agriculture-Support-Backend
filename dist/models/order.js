@@ -1,7 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const { Sequelize, DataTypes } = require("sequelize");
+const sequelize_1 = require("sequelize");
 const Dbconnection_1 = require("../config/Dbconnection");
+class OrderInt extends sequelize_1.Model {
+}
 const Order = Dbconnection_1.ConnectionSequelize.define("Order", {
     id: {
         type: DataTypes.UUID,

@@ -36,6 +36,7 @@ app.use(body_parser_1.default.json());
 }))();
 app.use("/auth", authRoutes_1.default);
 app.use("/crops", cropRoutes_1.default);
+app.use("/order");
 const port = process.env.PORT;
 app.listen(port, () => {
     console.log("app running on port 4000");
