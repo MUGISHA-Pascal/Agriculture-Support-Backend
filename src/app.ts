@@ -20,7 +20,7 @@ app.use(bodyParser.json());
   }
 })();
 app.use("/auth", AuthRoutes);
-app.use("/crop", CropRoutes);
+app.use("/crops", CropRoutes);
 const port = process.env.PORT;
 app.listen(port, () => {
   console.log("app running on port 4000");

@@ -3,7 +3,7 @@ import Crop from "../models/crop";
 
 /**
  * @swagger
- * /crops:
+ * /crops/get_all_crops:
  *   get:
  *     summary: Fetch all crops
  *     tags: [Crops]
@@ -30,7 +30,7 @@ export const getAllCrops = async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /crops/{id}:
+ * /crops/get_crop/{id}:
  *   get:
  *     summary: Fetch a single crop by ID
  *     tags: [Crops]
@@ -58,7 +58,7 @@ export const getCropById = async (req: Request, res: Response) => {
   try {
     const crop = await Crop.findByPk(id);
     if (!crop) {
-      return res.status(404).json({ message: "Crop not found" });
+      res.status(404).json({ message: "Crop not found" });
     }
     res.status(200).json(crop);
   } catch (error) {
@@ -68,7 +68,7 @@ export const getCropById = async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /crops:
+ * /crops/add_crop:
  *   post:
  *     summary: Add a new crop
  *     tags: [Crops]
@@ -103,7 +103,7 @@ export const addCrop = async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /crops/{id}:
+ * /crops/update_crop/{id}:
  *   put:
  *     summary: Update a crop by ID
  *     tags: [Crops]
@@ -128,14 +128,18 @@ export const addCrop = async (req: Request, res: Response) => {
  *       500:
  *         description: Failed to update the crop.
  */
-export const updateCrop = async (req: Request, res: Response) => {
+export const updateCrop = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   const { cropName, harvestSeason, qtyPerSeason, pricePerKg, verified } =
     req.body;
   try {
     const crop = await Crop.findByPk(id);
     if (!crop) {
-      return res.status(404).json({ message: "Crop not found" });
+      res.status(404).json({ message: "Crop not found" });
+      return;
     }
 
     await crop.update({
@@ -154,7 +158,7 @@ export const updateCrop = async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /crops/{id}:
+ * /crops/delete_crop/{id}:
  *   delete:
  *     summary: Delete a crop by ID
  *     tags: [Crops]
@@ -173,12 +177,16 @@ export const updateCrop = async (req: Request, res: Response) => {
  *       500:
  *         description: Failed to delete the crop.
  */
-export const deleteCropById = async (req: Request, res: Response) => {
+export const deleteCropById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   try {
     const crop = await Crop.findByPk(id);
     if (!crop) {
-      return res.status(404).json({ message: "Crop not found" });
+      res.status(404).json({ message: "Crop not found" });
+      return;
     }
 
     await crop.destroy();
@@ -190,7 +198,7 @@ export const deleteCropById = async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /crops:
+ * /crops/delete_all_crops:
  *   delete:
  *     summary: Delete multiple crops by IDs
  *     tags: [Crops]
@@ -218,7 +226,7 @@ export const deleteCropById = async (req: Request, res: Response) => {
 export const deleteAllCrops = async (req: Request, res: Response) => {
   const { ids } = req.body; // Expecting an array of IDs in the body
   if (!Array.isArray(ids) || ids.length === 0) {
-    return res
+    res
       .status(400)
       .json({ message: "Please provide a valid list of crop IDs." });
   }
@@ -231,7 +239,7 @@ export const deleteAllCrops = async (req: Request, res: Response) => {
     });
 
     if (deletedCount === 0) {
-      return res
+      res
         .status(404)
         .json({ message: "No crops found with the provided IDs." });
     }

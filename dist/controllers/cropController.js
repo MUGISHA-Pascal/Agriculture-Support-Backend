@@ -16,7 +16,7 @@ exports.deleteAllCrops = exports.deleteCropById = exports.updateCrop = exports.a
 const crop_1 = __importDefault(require("../models/crop"));
 /**
  * @swagger
- * /crops:
+ * /crops/get_all_crops:
  *   get:
  *     summary: Fetch all crops
  *     tags: [Crops]
@@ -44,7 +44,7 @@ const getAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getAllCrops = getAllCrops;
 /**
  * @swagger
- * /crops/{id}:
+ * /crops/get_crop/{id}:
  *   get:
  *     summary: Fetch a single crop by ID
  *     tags: [Crops]
@@ -72,7 +72,7 @@ const getCropById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const crop = yield crop_1.default.findByPk(id);
         if (!crop) {
-            return res.status(404).json({ message: "Crop not found" });
+            res.status(404).json({ message: "Crop not found" });
         }
         res.status(200).json(crop);
     }
@@ -83,7 +83,7 @@ const getCropById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getCropById = getCropById;
 /**
  * @swagger
- * /crops:
+ * /crops/add_crop:
  *   post:
  *     summary: Add a new crop
  *     tags: [Crops]
@@ -118,7 +118,7 @@ const addCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addCrop = addCrop;
 /**
  * @swagger
- * /crops/{id}:
+ * /crops/update_crop/{id}:
  *   put:
  *     summary: Update a crop by ID
  *     tags: [Crops]
@@ -149,7 +149,8 @@ const updateCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const crop = yield crop_1.default.findByPk(id);
         if (!crop) {
-            return res.status(404).json({ message: "Crop not found" });
+            res.status(404).json({ message: "Crop not found" });
+            return;
         }
         yield crop.update({
             cropName,
@@ -167,7 +168,7 @@ const updateCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.updateCrop = updateCrop;
 /**
  * @swagger
- * /crops/{id}:
+ * /crops/delete_crop/{id}:
  *   delete:
  *     summary: Delete a crop by ID
  *     tags: [Crops]
@@ -191,7 +192,8 @@ const deleteCropById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const crop = yield crop_1.default.findByPk(id);
         if (!crop) {
-            return res.status(404).json({ message: "Crop not found" });
+            res.status(404).json({ message: "Crop not found" });
+            return;
         }
         yield crop.destroy();
         res.status(200).json({ message: "Crop deleted successfully" });
@@ -203,7 +205,7 @@ const deleteCropById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.deleteCropById = deleteCropById;
 /**
  * @swagger
- * /crops:
+ * /crops/delete_all_crops:
  *   delete:
  *     summary: Delete multiple crops by IDs
  *     tags: [Crops]
@@ -231,7 +233,7 @@ exports.deleteCropById = deleteCropById;
 const deleteAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ids } = req.body; // Expecting an array of IDs in the body
     if (!Array.isArray(ids) || ids.length === 0) {
-        return res
+        res
             .status(400)
             .json({ message: "Please provide a valid list of crop IDs." });
     }
@@ -242,7 +244,7 @@ const deleteAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function*
             },
         });
         if (deletedCount === 0) {
-            return res
+            res
                 .status(404)
                 .json({ message: "No crops found with the provided IDs." });
         }
