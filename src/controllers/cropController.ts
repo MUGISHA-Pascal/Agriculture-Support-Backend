@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Crop from "../models/crop";
+import { where } from "sequelize";
 /**
  * @swagger
  * /crops/get_all_crops:
@@ -19,8 +20,11 @@ import Crop from "../models/crop";
  *         description: Server error
  */
 export const getAllCrops = async (req: Request, res: Response) => {
+  const { farmerId } = req.body;
   try {
-    const crops = await Crop.findAll();
+    const crops = await Crop.findAll({
+      where: { cropOwner: farmerId },
+    });
     res.status(200).json(crops);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch crops", error });
@@ -54,9 +58,11 @@ export const getAllCrops = async (req: Request, res: Response) => {
  *         description: Server error
  */
 export const getCropById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id, farmerId } = req.params;
   try {
-    const crop = await Crop.findByPk(id);
+    const crop = await Crop.findAll({
+      where: { id, cropOwner: farmerId },
+    });
     if (!crop) {
       res.status(404).json({ message: "Crop not found" });
     }
@@ -89,7 +95,7 @@ export const getCropById = async (req: Request, res: Response) => {
  *         description: Server error
  */
 export const addCrop = async (req: Request, res: Response) => {
-  const { cropName, harvestSeason, qtyPerSeason, pricePerKg, verified } =
+  const { cropName, harvestSeason, qtyPerSeason, pricePerKg, farmerId } =
     req.body;
   try {
     const newCrop = await Crop.create({
@@ -97,7 +103,7 @@ export const addCrop = async (req: Request, res: Response) => {
       harvestSeason,
       qtyPerSeason,
       pricePerKg,
-      verified,
+      cropOwner: farmerId,
     });
     res.status(201).json(newCrop);
   } catch (error) {
@@ -137,10 +143,10 @@ export const updateCrop = async (
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
-  const { cropName, harvestSeason, qtyPerSeason, pricePerKg, verified } =
+  const { cropName, harvestSeason, qtyPerSeason, pricePerKg, farmerId } =
     req.body;
   try {
-    const crop = await Crop.findByPk(id);
+    const crop = await Crop.findOne({ where: { id, cropOwner: farmerId } });
     if (!crop) {
       res.status(404).json({ message: "Crop not found" });
       return;
@@ -151,7 +157,6 @@ export const updateCrop = async (
       harvestSeason,
       qtyPerSeason,
       pricePerKg,
-      verified,
     });
 
     res.status(200).json({ message: "Crop updated successfully", crop });
@@ -234,7 +239,7 @@ export const deleteCropById = async (
  *         description: Server error
  */
 export const deleteAllCrops = async (req: Request, res: Response) => {
-  const { ids } = req.body; // Expecting an array of IDs in the body
+  const { ids, farmerId } = req.body; // Expecting an array of IDs in the body
   if (!Array.isArray(ids) || ids.length === 0) {
     res
       .status(400)
@@ -245,6 +250,7 @@ export const deleteAllCrops = async (req: Request, res: Response) => {
     const deletedCount = await Crop.destroy({
       where: {
         id: ids,
+        cropOwner: farmerId,
       },
     });
 

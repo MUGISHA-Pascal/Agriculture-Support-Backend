@@ -4,5 +4,5 @@ export interface CropInterface {
   harvestSeason: string;
   qtyPerSeason: number;
   pricePerKg: number;
-  verified?: boolean;
+  cropOwner?: number;
 }

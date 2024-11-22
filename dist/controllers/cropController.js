@@ -33,8 +33,11 @@ const crop_1 = __importDefault(require("../models/crop"));
  *         description: Server error
  */
 const getAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { farmerId } = req.body;
     try {
-        const crops = yield crop_1.default.findAll();
+        const crops = yield crop_1.default.findAll({
+            where: { cropOwner: farmerId },
+        });
         res.status(200).json(crops);
     }
     catch (error) {
@@ -69,9 +72,11 @@ exports.getAllCrops = getAllCrops;
  *         description: Server error
  */
 const getCropById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { id, farmerId } = req.params;
     try {
-        const crop = yield crop_1.default.findByPk(id);
+        const crop = yield crop_1.default.findAll({
+            where: { id, cropOwner: farmerId },
+        });
         if (!crop) {
             res.status(404).json({ message: "Crop not found" });
         }
@@ -105,14 +110,14 @@ exports.getCropById = getCropById;
  *         description: Server error
  */
 const addCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { cropName, harvestSeason, qtyPerSeason, pricePerKg, verified } = req.body;
+    const { cropName, harvestSeason, qtyPerSeason, pricePerKg, farmerId } = req.body;
     try {
         const newCrop = yield crop_1.default.create({
             cropName,
             harvestSeason,
             qtyPerSeason,
             pricePerKg,
-            verified,
+            cropOwner: farmerId,
         });
         res.status(201).json(newCrop);
     }
@@ -151,9 +156,9 @@ exports.addCrop = addCrop;
  */
 const updateCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { cropName, harvestSeason, qtyPerSeason, pricePerKg, verified } = req.body;
+    const { cropName, harvestSeason, qtyPerSeason, pricePerKg, farmerId } = req.body;
     try {
-        const crop = yield crop_1.default.findByPk(id);
+        const crop = yield crop_1.default.findOne({ where: { id, cropOwner: farmerId } });
         if (!crop) {
             res.status(404).json({ message: "Crop not found" });
             return;
@@ -163,7 +168,6 @@ const updateCrop = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             harvestSeason,
             qtyPerSeason,
             pricePerKg,
-            verified,
         });
         res.status(200).json({ message: "Crop updated successfully", crop });
     }
@@ -243,7 +247,7 @@ exports.deleteCropById = deleteCropById;
  *         description: Server error
  */
 const deleteAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { ids } = req.body; // Expecting an array of IDs in the body
+    const { ids, farmerId } = req.body; // Expecting an array of IDs in the body
     if (!Array.isArray(ids) || ids.length === 0) {
         res
             .status(400)
@@ -253,6 +257,7 @@ const deleteAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const deletedCount = yield crop_1.default.destroy({
             where: {
                 id: ids,
+                cropOwner: farmerId,
             },
         });
         if (deletedCount === 0) {
