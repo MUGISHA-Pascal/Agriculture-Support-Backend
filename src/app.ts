@@ -23,8 +23,4 @@ app.use(bodyParser.json());
 app.use("/auth", AuthRoutes);
 app.use("/crops", CropRoutes);
 app.use("/orders", orderRoutes);
-const port = process.env.PORT;
-app.listen(port, () => {
-  console.log("app running on port 4000");
-});
-swaggerDocs(app, port);
+export default app;

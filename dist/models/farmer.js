@@ -32,6 +32,7 @@ const Farmer = Dbconnection_1.ConnectionSequelize.define("Farmer", {
     phoneNo: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: { type: DataTypes.STRING, allowNull: false },
     profilePhoto: { type: DataTypes.STRING },
+    rating: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     subscriptionType: {
         type: DataTypes.ENUM("Basic", "Premium"),
         // allowNull: false,

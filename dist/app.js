@@ -17,7 +17,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const Dbconnection_1 = require("./config/Dbconnection");
-const swagger_1 = __importDefault(require("./swagger"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const cropRoutes_1 = __importDefault(require("./routes/cropRoutes"));
 const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
@@ -38,8 +37,4 @@ app.use(body_parser_1.default.json());
 app.use("/auth", authRoutes_1.default);
 app.use("/crops", cropRoutes_1.default);
 app.use("/orders", orderRoutes_1.default);
-const port = process.env.PORT;
-app.listen(port, () => {
-    console.log("app running on port 4000");
-});
-(0, swagger_1.default)(app, port);
+exports.default = app;
