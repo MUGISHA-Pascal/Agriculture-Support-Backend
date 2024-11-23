@@ -16,3 +16,4 @@ const Rating = Dbconnection_1.ConnectionSequelize.define("Rating", {
 }, {
     timestamps: true,
 });
+exports.default = Rating;

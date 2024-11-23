@@ -11,19 +11,31 @@ io.on("connection", async (socket: Socket) => {
   let farmers = await Farmer.findAll();
   let SocketRateManage = new Map();
   farmers.map((farmer) => {
-    SocketRateManage.set(farmer.id, farmer.rating);
+    SocketRateManage.set(farmer.id, farmer.ratingCount);
   });
-  //issue fixing rating
   socket.on(
     "rate",
     async ({ rate, farmerId }: { rate: number; farmerId: number }) => {
       const farmerSpecified = await Farmer.findOne({ where: { id: farmerId } });
-      // farmerSpecified?.rating ? farmerSpecified.rating++ : farmerSpecified?.rating;
-      SocketRateManage.set(farmerId, farmerSpecified?.rating);
+      farmerSpecified?.ratingCount
+        ? farmerSpecified.ratingCount++
+        : farmerSpecified?.ratingCount;
+      SocketRateManage.set(farmerId, farmerSpecified?.ratingCount);
       try {
         const AllBuyers = await Buyer.count();
         const totalRatings = AllBuyers * 5;
-        // const averageRating = ( / totalRatings) * 100;
+        const averageRating =
+          (SocketRateManage.get(farmerId) / totalRatings) * 100;
+        let farmerUpdated = await Farmer.update(
+          { ratingAverage: averageRating },
+          { where: { id: farmerId } }
+        );
+        if (!farmerUpdated)
+          throw new Error("error finding the farmer to be updated");
+        io.emit("rating", {
+          ratingAverage: farmerSpecified?.ratingAverage,
+          farmerId: farmerSpecified?.id,
+        });
       } catch (error) {
         console.log(error);
       }

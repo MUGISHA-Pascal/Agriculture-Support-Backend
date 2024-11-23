@@ -15,7 +15,8 @@ class FarmerInt extends Model<farmerInterface> implements farmerInterface {
   public subscriptionType!: "Basic" | "Premium";
   public subscriptionStartDate!: Date;
   public subscriptionEndDate!: Date;
-  public rating?: number;
+  public ratingCount!: number;
+  public ratingAverage!: number;
 }
 
 const Farmer = ConnectionSequelize.define<FarmerInt>(
@@ -34,12 +35,12 @@ const Farmer = ConnectionSequelize.define<FarmerInt>(
     phoneNo: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: { type: DataTypes.STRING, allowNull: false },
     profilePhoto: { type: DataTypes.STRING },
-    rating: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
-    subscriptionType: {
-      type: DataTypes.ENUM("Basic", "Premium"),
-      // allowNull: false,
-      defaultValue: "Basic",
-    },
+    // rating: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
+    // subscriptionType: {
+    // 	type: DataTypes.ENUM("Basic", "Premium"),
+    // 	// allowNull: false,
+    // 	defaultValue: "Basic",
+    // },
     subscriptionStartDate: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -47,6 +48,16 @@ const Farmer = ConnectionSequelize.define<FarmerInt>(
     subscriptionEndDate: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+    ratingAverage: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    ratingCount: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
     },
   },
   {

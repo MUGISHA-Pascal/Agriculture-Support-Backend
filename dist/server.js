@@ -25,17 +25,25 @@ io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     let farmers = yield farmer_1.default.findAll();
     let SocketRateManage = new Map();
     farmers.map((farmer) => {
-        SocketRateManage.set(farmer.id, farmer.rating);
+        SocketRateManage.set(farmer.id, farmer.ratingCount);
     });
-    //issue fixing rating
     socket.on("rate", (_a) => __awaiter(void 0, [_a], void 0, function* ({ rate, farmerId }) {
         const farmerSpecified = yield farmer_1.default.findOne({ where: { id: farmerId } });
-        // farmerSpecified?.rating ? farmerSpecified.rating++ : farmerSpecified?.rating;
-        SocketRateManage.set(farmerId, farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.rating);
+        (farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount)
+            ? farmerSpecified.ratingCount++
+            : farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount;
+        SocketRateManage.set(farmerId, farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount);
         try {
             const AllBuyers = yield buyer_1.default.count();
             const totalRatings = AllBuyers * 5;
-            // const averageRating = ( / totalRatings) * 100;
+            const averageRating = (SocketRateManage.get(farmerId) / totalRatings) * 100;
+            let farmerUpdated = yield farmer_1.default.update({ ratingAverage: averageRating }, { where: { id: farmerId } });
+            if (!farmerUpdated)
+                throw new Error("error finding the farmer to be updated");
+            io.emit("rating", {
+                ratingAverage: farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingAverage,
+                farmerId: farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.id,
+            });
         }
         catch (error) {
             console.log(error);
