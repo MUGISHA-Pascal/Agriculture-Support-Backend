@@ -18,7 +18,7 @@ io.on("connection", async (socket: Socket) => {
     async ({ rate, farmerId }: { rate: number; farmerId: number }) => {
       const farmerSpecified = await Farmer.findOne({ where: { id: farmerId } });
       farmerSpecified?.ratingCount
-        ? farmerSpecified.ratingCount++
+        ? (farmerSpecified.ratingCount += rate)
         : farmerSpecified?.ratingCount;
       SocketRateManage.set(farmerId, farmerSpecified?.ratingCount);
       try {

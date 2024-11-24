@@ -30,7 +30,7 @@ io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     socket.on("rate", (_a) => __awaiter(void 0, [_a], void 0, function* ({ rate, farmerId }) {
         const farmerSpecified = yield farmer_1.default.findOne({ where: { id: farmerId } });
         (farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount)
-            ? farmerSpecified.ratingCount++
+            ? (farmerSpecified.ratingCount += rate)
             : farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount;
         SocketRateManage.set(farmerId, farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount);
         try {
