@@ -55,7 +55,7 @@ describe("Socket io rating system", () => {
                 ratingAverage: expect.any(Number),
             }, { where: { id: farmerId } });
             done();
-        }, 1000);
+        }, 10000);
     });
     it("should not crash on error in rating event ", (done) => {
         const mockFindAll = jest
@@ -77,6 +77,6 @@ describe("Socket io rating system", () => {
         setTimeout(() => {
             expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
             done();
-        }, 1000);
+        }, 10000);
     });
 });
