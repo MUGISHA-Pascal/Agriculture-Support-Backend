@@ -5,9 +5,17 @@ import swaggerDocs from "./swagger";
 import Buyer from "./models/buyer";
 import Farmer from "./models/farmer";
 const server = http.createServer(app);
-const io = new Server(server);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
 const port = process.env.PORT;
+
 io.on("connection", async (socket: Socket) => {
+  console.log("A user connected");
   let farmers = await Farmer.findAll();
   let SocketRateManage = new Map();
   farmers.map((farmer) => {

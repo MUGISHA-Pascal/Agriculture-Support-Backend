@@ -15,7 +15,7 @@ const Crop = Dbconnection_1.ConnectionSequelize.define("Crop", {
     harvestSeason: { type: DataTypes.STRING, allowNull: false },
     qtyPerSeason: { type: DataTypes.FLOAT, allowNull: false },
     pricePerKg: { type: DataTypes.FLOAT, allowNull: false },
-    cropOwner: { type: DataTypes.INTEGER, defaultValue: false },
+    cropOwner: { type: DataTypes.INTEGER },
 }, {
     timestamps: true,
 });

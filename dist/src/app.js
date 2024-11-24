@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const Dbconnection_1 = require("./config/Dbconnection");
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const cropRoutes_1 = __importDefault(require("./routes/cropRoutes"));
 const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());

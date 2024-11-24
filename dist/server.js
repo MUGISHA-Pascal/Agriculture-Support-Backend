@@ -19,9 +19,14 @@ const swagger_1 = __importDefault(require("./swagger"));
 const buyer_1 = __importDefault(require("./models/buyer"));
 const farmer_1 = __importDefault(require("./models/farmer"));
 const server = http_1.default.createServer(app_1.default);
-const io = new socket_io_1.Server(server);
+const io = new socket_io_1.Server(server, {
+    cors: {
+        origin: "*",
+    },
+});
 const port = process.env.PORT;
 io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("A user connected");
     let farmers = yield farmer_1.default.findAll();
     let SocketRateManage = new Map();
     farmers.map((farmer) => {
@@ -30,7 +35,7 @@ io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     socket.on("rate", (_a) => __awaiter(void 0, [_a], void 0, function* ({ rate, farmerId }) {
         const farmerSpecified = yield farmer_1.default.findOne({ where: { id: farmerId } });
         (farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount)
-            ? farmerSpecified.ratingCount++
+            ? (farmerSpecified.ratingCount += rate)
             : farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount;
         SocketRateManage.set(farmerId, farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount);
         try {
