@@ -34,12 +34,14 @@ io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     });
     socket.on("rate", (_a) => __awaiter(void 0, [_a], void 0, function* ({ rate, farmerId }) {
         const farmerSpecified = yield farmer_1.default.findOne({ where: { id: farmerId } });
-        (farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount)
-            ? (farmerSpecified.ratingCount += rate)
-            : farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount;
+        if (farmerSpecified) {
+            farmerSpecified.ratingCount += rate;
+            yield farmer_1.default.update({ ratingCount: (farmerSpecified.ratingCount += 1) }, { where: { id: farmerId } });
+        }
         SocketRateManage.set(farmerId, farmerSpecified === null || farmerSpecified === void 0 ? void 0 : farmerSpecified.ratingCount);
         try {
-            const AllBuyers = yield buyer_1.default.count();
+            let AllBuyers = yield buyer_1.default.count();
+            AllBuyers == 0 ? (AllBuyers = 1) : AllBuyers;
             const totalRatings = AllBuyers * 5;
             const averageRating = (SocketRateManage.get(farmerId) / totalRatings) * 100;
             let farmerUpdated = yield farmer_1.default.update({ ratingAverage: averageRating }, { where: { id: farmerId } });
@@ -54,6 +56,9 @@ io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
             console.log(error);
         }
     }));
+    socket.on("disconnect", () => {
+        console.log("user disconnected");
+    });
 }));
 server.listen(port, () => {
     console.log("app running on port", port);

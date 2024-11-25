@@ -22,12 +22,15 @@ const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
 const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: "http://localhost:3000",
+    credentials: true,
+}));
 app.use(body_parser_1.default.json());
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Dbconnection_1.ConnectionSequelize.authenticate();
-        yield Dbconnection_1.ConnectionSequelize.sync({ alter: true, force: true });
+        yield Dbconnection_1.ConnectionSequelize.sync({ alter: true });
         console.log("connected to the database and saved");
     }
     catch (error) {

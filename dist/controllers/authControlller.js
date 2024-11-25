@@ -72,6 +72,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             if (buyer) {
                 const ismatch = yield bcrypt_1.default.compare(password, buyer.password);
                 if (ismatch) {
+                    const token = createToken(Number(buyer.id));
+                    res.cookie("jwt", token, { maxAge: maxAge * 1000 });
                     res.status(200).json({
                         message: "buyer found",
                         Farmer: {
@@ -115,11 +117,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     });
                 }
                 else {
-                    res.status(401).json({ message: "Farmer not found(password)" });
+                    res.status(401).json({ password: "password not found" });
                 }
             }
             else {
-                res.status(401).json({ message: "Farmer not found(phone number)" });
+                res.status(401).json({ phone: "phone number not found" });
             }
         }
         catch (error) {
@@ -188,10 +190,10 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             const buyerId = parseInt(buyer.id.slice(1), 10);
             const token = createToken(buyerId);
-            res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+            res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
             res.status(200).json({
                 message: "buyer created",
-                Farmer: {
+                buyer: {
                     id: buyer.id,
                     firstname: buyer.firstname,
                     lastname: buyer.lastname,
@@ -214,7 +216,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 password,
             });
             const token = createToken(farmer.id);
-            res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+            res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
             res.status(200).json({
                 message: "Farmer created",
                 Farmer: {

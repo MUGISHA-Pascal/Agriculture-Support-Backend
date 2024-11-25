@@ -60,6 +60,8 @@ export const login = async (req: Request, res: Response) => {
       if (buyer) {
         const ismatch = await bcrypt.compare(password, buyer.password);
         if (ismatch) {
+          const token = createToken(Number(buyer.id));
+          res.cookie("jwt", token, { maxAge: maxAge * 1000 });
           res.status(200).json({
             message: "buyer found",
             Farmer: {
@@ -98,10 +100,10 @@ export const login = async (req: Request, res: Response) => {
             },
           });
         } else {
-          res.status(401).json({ message: "Farmer not found(password)" });
+          res.status(401).json({ password: "password not found" });
         }
       } else {
-        res.status(401).json({ message: "Farmer not found(phone number)" });
+        res.status(401).json({ phone: "phone number not found" });
       }
     } catch (error) {
       console.log(error);
@@ -168,10 +170,10 @@ export const signup = async (req: Request, res: Response) => {
       });
       const buyerId = parseInt(buyer.id.slice(1), 10);
       const token = createToken(buyerId);
-      res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+      res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
       res.status(200).json({
         message: "buyer created",
-        Farmer: {
+        buyer: {
           id: buyer.id,
           firstname: buyer.firstname,
           lastname: buyer.lastname,
@@ -192,7 +194,7 @@ export const signup = async (req: Request, res: Response) => {
         password,
       });
       const token = createToken(farmer.id);
-      res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+      res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
       res.status(200).json({
         message: "Farmer created",
         Farmer: {

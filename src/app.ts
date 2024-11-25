@@ -8,12 +8,17 @@ import orderRoutes from "./routes/orderRoutes";
 import cors from "cors";
 dotenv.config();
 const app: Express = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(bodyParser.json());
 (async () => {
   try {
     await ConnectionSequelize.authenticate();
-    await ConnectionSequelize.sync({ alter: true, force: true });
+    await ConnectionSequelize.sync({ alter: true });
     console.log("connected to the database and saved");
   } catch (error) {
     console.log(error);

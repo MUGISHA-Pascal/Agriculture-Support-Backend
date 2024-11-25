@@ -25,12 +25,18 @@ io.on("connection", async (socket: Socket) => {
     "rate",
     async ({ rate, farmerId }: { rate: number; farmerId: number }) => {
       const farmerSpecified = await Farmer.findOne({ where: { id: farmerId } });
-      farmerSpecified?.ratingCount
-        ? (farmerSpecified.ratingCount += rate)
-        : farmerSpecified?.ratingCount;
+
+      if (farmerSpecified) {
+        farmerSpecified.ratingCount += rate;
+        await Farmer.update(
+          { ratingCount: (farmerSpecified.ratingCount += 1) },
+          { where: { id: farmerId } }
+        );
+      }
       SocketRateManage.set(farmerId, farmerSpecified?.ratingCount);
       try {
-        const AllBuyers = await Buyer.count();
+        let AllBuyers = await Buyer.count();
+        AllBuyers == 0 ? (AllBuyers = 1) : AllBuyers;
         const totalRatings = AllBuyers * 5;
         const averageRating =
           (SocketRateManage.get(farmerId) / totalRatings) * 100;
@@ -49,6 +55,9 @@ io.on("connection", async (socket: Socket) => {
       }
     }
   );
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });
 server.listen(port, () => {
   console.log("app running on port", port);
