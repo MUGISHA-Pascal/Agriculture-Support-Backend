@@ -20,6 +20,7 @@ const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const cropRoutes_1 = __importDefault(require("./routes/cropRoutes"));
 const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
 const cors_1 = __importDefault(require("cors"));
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
@@ -40,4 +41,5 @@ app.use(body_parser_1.default.json());
 app.use("/auth", authRoutes_1.default);
 app.use("/crops", cropRoutes_1.default);
 app.use("/orders", orderRoutes_1.default);
+app.use("/user", userRoutes_1.default);
 exports.default = app;

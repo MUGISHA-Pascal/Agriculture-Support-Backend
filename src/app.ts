@@ -6,6 +6,7 @@ import AuthRoutes from "./routes/authRoutes";
 import CropRoutes from "./routes/cropRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import cors from "cors";
+import UserRoutes from "./routes/userRoutes";
 dotenv.config();
 const app: Express = express();
 app.use(
@@ -27,4 +28,5 @@ app.use(bodyParser.json());
 app.use("/auth", AuthRoutes);
 app.use("/crops", CropRoutes);
 app.use("/orders", orderRoutes);
+app.use("/user", UserRoutes);
 export default app;
