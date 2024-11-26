@@ -71,6 +71,7 @@ export const login = async (req: Request, res: Response) => {
               lastname: buyer.lastname,
               country: buyer.country,
               phoneNo: buyer.phoneNo,
+              role: "buyer",
             },
           });
         } else {
@@ -99,6 +100,7 @@ export const login = async (req: Request, res: Response) => {
               country: farmer.country,
               district: farmer.district,
               phoneNo: farmer.phoneNo,
+              role: "farmer",
             },
           });
         } else {
@@ -182,6 +184,7 @@ export const signup = async (req: Request, res: Response) => {
           lastname: buyer.lastname,
           country: buyer.country,
           phoneNo: buyer.phoneNo,
+          role: "buyer",
         },
       });
     } catch (error) {
@@ -208,10 +211,15 @@ export const signup = async (req: Request, res: Response) => {
           country: farmer.country,
           district: farmer.district,
           phoneNo: farmer.phoneNo,
+          role: "farmer",
         },
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      error.errors.map((err: any) => {
+        if (err.message === "phoneNo must be unique") {
+          res.status(401).json({ error: "phone number arleady used" });
+        }
+      });
     }
   } else {
     res.json(404).json({

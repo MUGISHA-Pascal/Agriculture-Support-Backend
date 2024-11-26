@@ -82,6 +82,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                             lastname: buyer.lastname,
                             country: buyer.country,
                             phoneNo: buyer.phoneNo,
+                            role: "buyer",
                         },
                     });
                 }
@@ -114,6 +115,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                             country: farmer.country,
                             district: farmer.district,
                             phoneNo: farmer.phoneNo,
+                            role: "farmer",
                         },
                     });
                 }
@@ -201,6 +203,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     lastname: buyer.lastname,
                     country: buyer.country,
                     phoneNo: buyer.phoneNo,
+                    role: "buyer",
                 },
             });
         }
@@ -229,11 +232,16 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     country: farmer.country,
                     district: farmer.district,
                     phoneNo: farmer.phoneNo,
+                    role: "farmer",
                 },
             });
         }
         catch (error) {
-            console.log(error);
+            error.errors.map((err) => {
+                if (err.message === "phoneNo must be unique") {
+                    res.status(401).json({ error: "phone number arleady used" });
+                }
+            });
         }
     }
     else {
