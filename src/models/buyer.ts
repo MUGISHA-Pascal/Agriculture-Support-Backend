@@ -10,6 +10,7 @@ class BuyerInt extends Model<buyerInterface> implements buyerInterface {
   public phoneNo!: string;
   public password!: string;
   public profilePhoto!: string;
+  public country!: string;
 }
 const Buyer = ConnectionSequelize.define<BuyerInt>(
   "Buyer",
@@ -23,6 +24,7 @@ const Buyer = ConnectionSequelize.define<BuyerInt>(
     lastname: { type: DataTypes.STRING, allowNull: false },
     // idNo: { type: DataTypes.STRING, allowNull: false, unique: true },
     phoneNo: { type: DataTypes.STRING, allowNull: false, unique: true },
+    country: { type: DataTypes.STRING, allowNull: true },
     password: { type: DataTypes.STRING, allowNull: false },
     profilePhoto: { type: DataTypes.STRING },
   },

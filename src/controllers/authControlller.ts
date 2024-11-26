@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import Farmer from "../models/farmer";
 import Buyer from "../models/buyer";
 import bcrypt from "bcrypt";
+import { count } from "console";
 const maxAge = 24 * 60 * 60;
 
 const createToken = (id: number): string => {
@@ -64,10 +65,11 @@ export const login = async (req: Request, res: Response) => {
           res.cookie("jwt", token, { maxAge: maxAge * 1000 });
           res.status(200).json({
             message: "buyer found",
-            Farmer: {
+            user: {
               id: buyer.id,
               firstname: buyer.firstname,
               lastname: buyer.lastname,
+              country: buyer.country,
               phoneNo: buyer.phoneNo,
             },
           });
@@ -90,7 +92,7 @@ export const login = async (req: Request, res: Response) => {
           res.cookie("jwt", token, { maxAge: maxAge * 1000 });
           res.status(200).json({
             message: "Farmer found",
-            Farmer: {
+            user: {
               id: farmer.id,
               firstname: farmer.firstname,
               lastname: farmer.lastname,
@@ -166,6 +168,7 @@ export const signup = async (req: Request, res: Response) => {
         firstname,
         lastname,
         phoneNo,
+        country,
         password,
       });
       const buyerId = parseInt(buyer.id.slice(1), 10);
@@ -173,10 +176,11 @@ export const signup = async (req: Request, res: Response) => {
       res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
       res.status(200).json({
         message: "buyer created",
-        buyer: {
+        user: {
           id: buyer.id,
           firstname: buyer.firstname,
           lastname: buyer.lastname,
+          country: buyer.country,
           phoneNo: buyer.phoneNo,
         },
       });
@@ -197,7 +201,7 @@ export const signup = async (req: Request, res: Response) => {
       res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
       res.status(200).json({
         message: "Farmer created",
-        Farmer: {
+        user: {
           id: farmer.id,
           firstname: farmer.firstname,
           lastname: farmer.lastname,

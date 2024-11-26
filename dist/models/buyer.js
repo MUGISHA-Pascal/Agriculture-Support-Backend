@@ -28,6 +28,7 @@ const Buyer = Dbconnection_1.ConnectionSequelize.define("Buyer", {
     lastname: { type: DataTypes.STRING, allowNull: false },
     // idNo: { type: DataTypes.STRING, allowNull: false, unique: true },
     phoneNo: { type: DataTypes.STRING, allowNull: false, unique: true },
+    country: { type: DataTypes.STRING, allowNull: true },
     password: { type: DataTypes.STRING, allowNull: false },
     profilePhoto: { type: DataTypes.STRING },
 }, {

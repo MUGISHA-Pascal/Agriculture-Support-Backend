@@ -4,5 +4,6 @@ export interface buyerInterface {
   lastname: string;
   phoneNo: string;
   password: string;
+  country: string;
   profilePhoto?: string;
 }

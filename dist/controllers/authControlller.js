@@ -76,10 +76,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     res.cookie("jwt", token, { maxAge: maxAge * 1000 });
                     res.status(200).json({
                         message: "buyer found",
-                        Farmer: {
+                        user: {
                             id: buyer.id,
                             firstname: buyer.firstname,
                             lastname: buyer.lastname,
+                            country: buyer.country,
                             phoneNo: buyer.phoneNo,
                         },
                     });
@@ -106,7 +107,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     res.cookie("jwt", token, { maxAge: maxAge * 1000 });
                     res.status(200).json({
                         message: "Farmer found",
-                        Farmer: {
+                        user: {
                             id: farmer.id,
                             firstname: farmer.firstname,
                             lastname: farmer.lastname,
@@ -186,6 +187,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 firstname,
                 lastname,
                 phoneNo,
+                country,
                 password,
             });
             const buyerId = parseInt(buyer.id.slice(1), 10);
@@ -193,10 +195,11 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
             res.status(200).json({
                 message: "buyer created",
-                buyer: {
+                user: {
                     id: buyer.id,
                     firstname: buyer.firstname,
                     lastname: buyer.lastname,
+                    country: buyer.country,
                     phoneNo: buyer.phoneNo,
                 },
             });
@@ -219,7 +222,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
             res.status(200).json({
                 message: "Farmer created",
-                Farmer: {
+                user: {
                     id: farmer.id,
                     firstname: farmer.firstname,
                     lastname: farmer.lastname,
