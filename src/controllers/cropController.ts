@@ -20,7 +20,7 @@ import { where } from "sequelize";
  *         description: Server error
  */
 export const getAllCrops = async (req: Request, res: Response) => {
-  const { farmerId } = req.body;
+  const { farmerId } = req.params;
   try {
     const crops = await Crop.findAll({
       where: { cropOwner: farmerId },

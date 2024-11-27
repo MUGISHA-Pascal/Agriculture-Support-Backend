@@ -33,7 +33,7 @@ const crop_1 = __importDefault(require("../models/crop"));
  *         description: Server error
  */
 const getAllCrops = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { farmerId } = req.body;
+    const { farmerId } = req.params;
     try {
         const crops = yield crop_1.default.findAll({
             where: { cropOwner: farmerId },

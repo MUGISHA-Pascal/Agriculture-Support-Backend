@@ -9,7 +9,7 @@ import {
 } from "../controllers/cropController";
 
 const CropRoutes = Router();
-CropRoutes.get("/get_all_crops", getAllCrops);
+CropRoutes.get("/get_all_crops/:farmerId", getAllCrops);
 CropRoutes.get("/get_crop/:id", getCropById);
 CropRoutes.post("/add_crop", addCrop);
 CropRoutes.put("/update_crop/:id", updateCrop);
