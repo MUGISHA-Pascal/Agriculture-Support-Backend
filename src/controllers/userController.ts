@@ -42,15 +42,16 @@ export const imageRetrival = async (req: Request, res: Response) => {
 export const getAllFarmers = async (req: Request, res: Response) => {
   const { category } = req.params;
   try {
-    const cropsIds = await Crop.findAll({
+    const crops = await Crop.findAll({
       where: { cropName: category },
-      // attributes: ["cropOwner"],
     });
-    // const farmers = await Farmer.findAll({
-    //   where: { id: { [Op.in]: cropsIds } },
-    // });
-    console.log(cropsIds);
-    // res.status(200).json(farmers);
+    const cropsIds: number[] = [
+      ...new Set(crops.map((crop) => crop.cropOwner)),
+    ];
+    const farmers = await Farmer.findAll({
+      where: { id: { [Op.in]: cropsIds } },
+    });
+    res.status(200).json(farmers);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch farmers", error });
   }

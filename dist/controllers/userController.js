@@ -18,6 +18,7 @@ const fs_1 = __importDefault(require("fs"));
 const buyer_1 = __importDefault(require("../models/buyer"));
 const path_1 = __importDefault(require("path"));
 const crop_1 = __importDefault(require("../models/crop"));
+const sequelize_1 = require("sequelize");
 const fileUpload = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     if (!req.file) {
@@ -49,15 +50,16 @@ exports.imageRetrival = imageRetrival;
 const getAllFarmers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { category } = req.params;
     try {
-        const cropsIds = yield crop_1.default.findAll({
+        const crops = yield crop_1.default.findAll({
             where: { cropName: category },
-            // attributes: ["cropOwner"],
         });
-        // const farmers = await Farmer.findAll({
-        //   where: { id: { [Op.in]: cropsIds } },
-        // });
-        console.log(cropsIds);
-        // res.status(200).json(farmers);
+        const cropsIds = [
+            ...new Set(crops.map((crop) => crop.cropOwner)),
+        ];
+        const farmers = yield farmer_1.default.findAll({
+            where: { id: { [sequelize_1.Op.in]: cropsIds } },
+        });
+        res.status(200).json(farmers);
     }
     catch (error) {
         res.status(500).json({ message: "Failed to fetch farmers", error });
