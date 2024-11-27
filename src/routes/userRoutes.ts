@@ -4,5 +4,5 @@ import { fileUpload, imageRetrival } from "../controllers/userController";
 const UserRoutes = Router();
 
 UserRoutes.post("/upload", upload.single("file"), fileUpload);
-UserRoutes.get("/image", imageRetrival);
+UserRoutes.get("/image/:ImageName", imageRetrival);
 export default UserRoutes;

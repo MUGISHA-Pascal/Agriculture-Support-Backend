@@ -28,7 +28,7 @@ export const fileUpload = async (req: Request, res: Response) => {
 
 export const imageRetrival = async (req: Request, res: Response) => {
   const { ImageName } = req.params;
-  const filePath = path.join(__dirname, "uploads", ImageName);
+  const filePath = path.join(__dirname, "../../uploads", ImageName);
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       res.status(404).json({ error: "Image not found" });

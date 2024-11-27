@@ -36,7 +36,8 @@ const fileUpload = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.fileUpload = fileUpload;
 const imageRetrival = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ImageName } = req.params;
-    const filePath = path_1.default.join(__dirname, "uploads", ImageName);
+    const filePath = path_1.default.join(__dirname, "../../uploads", ImageName);
+    console.log(filePath);
     fs_1.default.access(filePath, fs_1.default.constants.F_OK, (err) => {
         if (err) {
             res.status(404).json({ error: "Image not found" });

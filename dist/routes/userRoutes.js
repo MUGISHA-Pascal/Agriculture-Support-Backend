@@ -8,5 +8,5 @@ const upload_1 = __importDefault(require("../middlewares/upload"));
 const userController_1 = require("../controllers/userController");
 const UserRoutes = (0, express_1.Router)();
 UserRoutes.post("/upload", upload_1.default.single("file"), userController_1.fileUpload);
-UserRoutes.get("/image", userController_1.imageRetrival);
+UserRoutes.get("/image/:ImageName", userController_1.imageRetrival);
 exports.default = UserRoutes;
