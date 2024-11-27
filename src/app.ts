@@ -7,6 +7,7 @@ import CropRoutes from "./routes/cropRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import cors from "cors";
 import UserRoutes from "./routes/userRoutes";
+import path from "path";
 dotenv.config();
 const app: Express = express();
 app.use(
@@ -15,6 +16,7 @@ app.use(
     credentials: true,
   })
 );
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use(bodyParser.json());
 (async () => {
   try {

@@ -21,12 +21,14 @@ const cropRoutes_1 = __importDefault(require("./routes/cropRoutes"));
 const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
 const cors_1 = __importDefault(require("cors"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
     origin: "http://localhost:3000",
     credentials: true,
 }));
+app.use("/uploads", express_1.default.static(path_1.default.join(__dirname, "../uploads")));
 app.use(body_parser_1.default.json());
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
