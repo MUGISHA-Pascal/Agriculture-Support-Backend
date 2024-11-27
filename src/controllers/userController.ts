@@ -3,6 +3,8 @@ import Farmer from "../models/farmer";
 import fs from "fs";
 import Buyer from "../models/buyer";
 import path from "path";
+import Crop from "../models/crop";
+import { Op } from "sequelize";
 export const fileUpload = async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ message: "No file uploaded" });
@@ -35,4 +37,21 @@ export const imageRetrival = async (req: Request, res: Response) => {
     }
     res.sendFile(filePath);
   });
+};
+
+export const getAllFarmers = async (req: Request, res: Response) => {
+  const { category } = req.params;
+  try {
+    const cropsIds = await Crop.findAll({
+      where: { cropName: category },
+      // attributes: ["cropOwner"],
+    });
+    // const farmers = await Farmer.findAll({
+    //   where: { id: { [Op.in]: cropsIds } },
+    // });
+    console.log(cropsIds);
+    // res.status(200).json(farmers);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch farmers", error });
+  }
 };

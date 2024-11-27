@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.imageRetrival = exports.fileUpload = void 0;
+exports.getAllFarmers = exports.imageRetrival = exports.fileUpload = void 0;
 const farmer_1 = __importDefault(require("../models/farmer"));
 const fs_1 = __importDefault(require("fs"));
 const buyer_1 = __importDefault(require("../models/buyer"));
 const path_1 = __importDefault(require("path"));
+const crop_1 = __importDefault(require("../models/crop"));
 const fileUpload = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     if (!req.file) {
@@ -45,3 +46,21 @@ const imageRetrival = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.imageRetrival = imageRetrival;
+const getAllFarmers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { category } = req.params;
+    try {
+        const cropsIds = yield crop_1.default.findAll({
+            where: { cropName: category },
+            // attributes: ["cropOwner"],
+        });
+        // const farmers = await Farmer.findAll({
+        //   where: { id: { [Op.in]: cropsIds } },
+        // });
+        console.log(cropsIds);
+        // res.status(200).json(farmers);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to fetch farmers", error });
+    }
+});
+exports.getAllFarmers = getAllFarmers;
