@@ -211,7 +211,11 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         catch (error) {
-            console.log(error);
+            error.errors.map((err) => {
+                if (err.message === "phoneNo must be unique") {
+                    res.status(401).json({ error: "phone number arleady used" });
+                }
+            });
         }
     }
     else if (role === "farmer") {

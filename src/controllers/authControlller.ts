@@ -190,8 +190,12 @@ export const signup = async (req: Request, res: Response) => {
           role: "buyer",
         },
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      error.errors.map((err: any) => {
+        if (err.message === "phoneNo must be unique") {
+          res.status(401).json({ error: "phone number arleady used" });
+        }
+      });
     }
   } else if (role === "farmer") {
     try {
