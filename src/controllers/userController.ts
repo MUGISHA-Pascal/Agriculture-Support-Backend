@@ -56,3 +56,13 @@ export const getAllFarmers = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to fetch farmers", error });
   }
 };
+
+export const getFarmerById = async (req: Request, res: Response) => {
+  const { farmerId } = req.params;
+  try {
+    const farmer = await Farmer.findOne({ where: { id: farmerId } });
+    res.status(200).json({ user: farmer });
+  } catch (error) {
+    console.log(error);
+  }
+};

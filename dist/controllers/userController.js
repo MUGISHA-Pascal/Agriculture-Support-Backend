@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllFarmers = exports.imageRetrival = exports.fileUpload = void 0;
+exports.getFarmerById = exports.getAllFarmers = exports.imageRetrival = exports.fileUpload = void 0;
 const farmer_1 = __importDefault(require("../models/farmer"));
 const fs_1 = __importDefault(require("fs"));
 const buyer_1 = __importDefault(require("../models/buyer"));
@@ -66,3 +66,14 @@ const getAllFarmers = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.getAllFarmers = getAllFarmers;
+const getFarmerById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { farmerId } = req.params;
+    try {
+        const farmer = yield farmer_1.default.findOne({ where: { id: farmerId } });
+        res.status(200).json({ user: farmer });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getFarmerById = getFarmerById;
