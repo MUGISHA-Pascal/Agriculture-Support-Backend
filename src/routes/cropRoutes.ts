@@ -10,7 +10,7 @@ import {
 
 const CropRoutes = Router();
 CropRoutes.get("/get_all_crops/:farmerId", getAllCrops);
-CropRoutes.get("/get_crop/:id", getCropById);
+CropRoutes.get("/get_crop/:farmerId/:cropName", getCropById);
 CropRoutes.post("/add_crop", addCrop);
 CropRoutes.put("/update_crop/:id", updateCrop);
 CropRoutes.delete("/delete_crop/:id", deleteCropById);

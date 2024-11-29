@@ -4,7 +4,7 @@ const express_1 = require("express");
 const cropController_1 = require("../controllers/cropController");
 const CropRoutes = (0, express_1.Router)();
 CropRoutes.get("/get_all_crops/:farmerId", cropController_1.getAllCrops);
-CropRoutes.get("/get_crop/:id", cropController_1.getCropById);
+CropRoutes.get("/get_crop/:farmerId/:cropName", cropController_1.getCropById);
 CropRoutes.post("/add_crop", cropController_1.addCrop);
 CropRoutes.put("/update_crop/:id", cropController_1.updateCrop);
 CropRoutes.delete("/delete_crop/:id", cropController_1.deleteCropById);

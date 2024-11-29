@@ -72,10 +72,10 @@ exports.getAllCrops = getAllCrops;
  *         description: Server error
  */
 const getCropById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, farmerId } = req.params;
+    const { farmerId, cropName } = req.params;
     try {
-        const crop = yield crop_1.default.findAll({
-            where: { id, cropOwner: farmerId },
+        const crop = yield crop_1.default.findOne({
+            where: { cropOwner: farmerId, cropName },
         });
         if (!crop) {
             res.status(404).json({ message: "Crop not found" });

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Crop from "../models/crop";
 import { where } from "sequelize";
+import { Op } from "sequelize";
 /**
  * @swagger
  * /crops/get_all_crops:
@@ -58,10 +59,10 @@ export const getAllCrops = async (req: Request, res: Response) => {
  *         description: Server error
  */
 export const getCropById = async (req: Request, res: Response) => {
-  const { id, farmerId } = req.params;
+  const { farmerId, cropName } = req.params;
   try {
-    const crop = await Crop.findAll({
-      where: { id, cropOwner: farmerId },
+    const crop = await Crop.findOne({
+      where: { cropOwner: farmerId, cropName },
     });
     if (!crop) {
       res.status(404).json({ message: "Crop not found" });
