@@ -5,14 +5,14 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "farm2global API",
+      title: "Farm2Global-API",
       description:
         "API endpoints for agriculture services documented on swagger",
-      // contact: {
-      //   name: "MUGISHA Pascal",
-      //   email: "mugishapascal2008@gmail.com",
-      //   url: "https://github.com/MUGISHA-Pascal/LessonTrack-API",
-      // },
+      contact: {
+        name: "MUGISHA Pascal",
+        email: "mugishapascal2008@gmail.com",
+        url: "https://github.com/MUGISHA-Pascal/LessonTrack-API",
+      },
       version: "1.0.0",
     },
     servers: [
